@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Slope Game</title>
     <style>
-        /* CSS Styles for the Page */
+        /* CSS for the body and the game area */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #87CEEB;  /* Sky Blue background */
-            color: white;  /* Text color */
+            color: white;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -25,72 +25,4 @@
         }
 
         #game {
-            width: 800px;   /* Set width of the game area */
-            height: 600px;  /* Set height of the game area */
-            background-color: #1E3A8A;  /* Dark blue game area */
-            border: 2px solid #ffffff;
-        }
-    </style>
-</head>
-<body>
-    <div class="game-container">
-        <h1>Slope Game</h1>
-        <div id="game"></div> <!-- Game area will be rendered here -->
-        
-        <script>
-            // JavaScript code for the game logic
-            const canvas = document.createElement('canvas');
-            document.getElementById('game').appendChild(canvas);
-            const ctx = canvas.getContext('2d');
-
-            // Set canvas size
-            canvas.width = 800;  // Set canvas width to 800px
-            canvas.height = 600; // Set canvas height to 600px
-
-            let ballX = canvas.width / 2;
-            let ballY = canvas.height - 30;
-            let ballRadius = 10;
-            let dx = 2;
-            let dy = -2;
-
-            // Set canvas background to dark blue
-            ctx.fillStyle = "#1E3A8A";  // Dark blue background
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            function drawBall() {
-                ctx.beginPath();
-                ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
-                ctx.fillStyle = "#0000FF";  // Blue color for the ball
-                ctx.fill();
-                ctx.closePath();
-            }
-
-            function draw() {
-                // Clear canvas and fill with the dark blue background
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = "#1E3A8A";  // Dark blue background
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                drawBall();
-
-                if (ballX + dx > canvas.width - ballRadius || ballX + dx < ballRadius) {
-                    dx = -dx;
-                }
-                if (ballY + dy < ballRadius) {
-                    dy = -dy;
-                } else if (ballY + dy > canvas.height - ballRadius) {
-                    if (ballX > canvas.width - ballRadius || ballX < ballRadius) {
-                        dy = -dy;
-                    }
-                }
-
-                ballX += dx;
-                ballY += dy;
-            }
-
-            setInterval(draw, 10);
-        </script>
-    </div>
-</body>
-</html>
-
+            width: 800px
