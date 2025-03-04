@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slope Game</title>
+    <style>
+        /* Basic styles for the page */
+        body {
+            background-color: #222;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            margin-top: 20px;
+        }
+
+        /* Canvas styles */
+        canvas {
+            border: 2px solid white;
+            background-color: #000;
+            display: block;
+            margin: 20px auto;
+            width: 100%;
+            max-width: 800px;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Slope Game</h1>
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        // Get the canvas element and set up the 2D context
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set up canvas size
+        canvas.width = 800;
+        canvas.height = 500;
+
+        // Game variables
+        let playerX = 100;
+        let playerY = canvas.height - 30;
+        let playerRadius = 20;
+        let playerSpeedX = 0;
+        let playerSpeedY = 0;
+        let gravity = 0.5;
+        let friction = 0.98;
+        let isJumping = false;
+        let gameOver = false;
+
+        // Game loop
+        function gameLoop() {
+            if (gameOver) {
+                alert("Game Over!");
+                return;
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Player Movement
+            playerSpeedY += gravity; // Apply gravity
+            playerX += playerSpeedX;
+            playerY += playerSpeedY;
+
+            // Collision with the ground (canvas bottom)
+            if (playerY + playerRadius > canvas.height) {
+                playerY = canvas.height - playerRadius;
+                playerSpeedY = -playerSpeedY * friction;
+                isJumping = false;
+            }
+
+            // Prevent player from going out of bounds on the left and right
+            if (playerX - playerRadius < 0) {
+                playerX = playerRadius;
+            } else if (playerX + playerRadius > canvas.width) {
+                playerX = canvas.width - playerRadius;
+            }
+
+            // Draw the player (a simple circle)
+            ctx.beginPath();
+            ctx.arc(playerX, playerY, playerRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "#ff5733"; // Red color for player
+            ctx.fill();
+            ctx.closePath();
+
+            // Request the next frame
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Handle user input for player movement
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowRight') {
+                playerSpeedX = 5; // Move right
+            } else if (event.key === 'ArrowLeft') {
+                playerSpeedX = -5; // Move left
+            } else if (event.key === 'ArrowUp' && !isJumping) {
+                playerSpeedY = -15; // Jump up
+                isJumping = true;
+            }
+        });
+
+        // Stop player movement when the arrow key is released
+        document.addEventListener('keyup', (event) => {
+            if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+                playerSpeedX = 0; // Stop horizontal movement
+            }
+        });
+
+        // Start the game loop when the page loads
+        window.onload = function() {
+            gameLoop();
+        };
+    </script>
+</body>
+</html>
