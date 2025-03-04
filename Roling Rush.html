@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slope Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #87CEEB; /* Sky blue background */
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #game {
+            width: 800px;
+            height: 600px;
+            background-color: #1E3A8A; /* Dark blue for the game */
+            border: 2px solid white;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Slope Game</h1>
+        <div id="game"></div> <!-- The game will be displayed here -->
+        
+        <script>
+            // Create a canvas element and append it to the "game" div
+            const canvas = document.createElement('canvas');
+            const gameArea = document.getElementById('game');
+            gameArea.appendChild(canvas);
+            const ctx = canvas.getContext('2d');
+
+            // Set the canvas dimensions
+            canvas.width = 800;
+            canvas.height = 600;
+
+            // Ball properties
+            let ballX = canvas.width / 2;
+            let ballY = canvas.height - 30;
+            let ballRadius = 10;
+            let dx = 2;
+            let dy = -2;
+
+            // Draw the ball on the canvas
+            function drawBall() {
+                ctx.beginPath();
+                ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+                ctx.fillStyle = "#0000FF"; // Ball color (blue)
+                ctx.fill();
+                ctx.closePath();
+            }
+
+            // Function to update the game every frame
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+                ctx.fillStyle = "#1E3A8A"; // Dark blue background
+                ctx.fillRect(0, 0, canvas.width, canvas.height); // Redraw the background
+
+                drawBall(); // Draw the ball
+
+                // Collision detection with the walls
+                if (ballX + dx > canvas.width - ballRadius || ballX + dx < ballRadius) {
+                    dx = -dx;
+                }
+                if (ballY + dy < ballRadius) {
+                    dy = -dy;
+                } else if (ballY + dy > canvas.height - ballRadius) {
+                    if (ballX > canvas.width - ballRadius || ballX < ballRadius) {
+                        dy = -dy;
+                    }
+                }
+
+                // Update ball position
+                ballX += dx;
+                ballY += dy;
+            }
+
+            // Redraw the game every 10 milliseconds
+            setInterval(draw, 10);
+        </script>
+    </div>
+</body>
+</html>
+
