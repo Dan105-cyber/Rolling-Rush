@@ -5,118 +5,90 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Slope Game</title>
     <style>
-        /* Basic styles for the page */
+        /* CSS Styles for the Page */
         body {
-            background-color: #222;
-            color: white;
             font-family: Arial, sans-serif;
-            text-align: center;
             margin: 0;
             padding: 0;
+            background-color: #87CEEB;  /* Sky Blue background */
+            color: white;  /* Text color */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
         }
 
         h1 {
-            margin-top: 20px;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        /* Canvas styles */
-        canvas {
-            border: 2px solid white;
-            background-color: #000;
-            display: block;
-            margin: 20px auto;
-            width: 100%;
-            max-width: 800px;
-            height: 500px;
+        #game {
+            width: 80%;
+            height: 80%;
+            background-color: #1E3A8A;  /* Dark blue game area */
+            border: 2px solid #ffffff;
         }
     </style>
 </head>
 <body>
-    <h1>Slope Game</h1>
-    <canvas id="gameCanvas"></canvas>
+    <div class="game-container">
+        <h1>Slope Game</h1>
+        <div id="game"></div> <!-- Game area will be rendered here -->
+        
+        <script>
+            // JavaScript code for the game logic
+            const canvas = document.createElement('canvas');
+            document.getElementById('game').appendChild(canvas);
+            const ctx = canvas.getContext('2d');
 
-    <script>
-        // Get the canvas element and set up the 2D context
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
 
-        // Set up canvas size
-        canvas.width = 800;
-        canvas.height = 500;
+            let ballX = canvas.width / 2;
+            let ballY = canvas.height - 30;
+            let ballRadius = 10;
+            let dx = 2;
+            let dy = -2;
 
-        // Game variables
-        let playerX = 100;
-        let playerY = canvas.height - 30;
-        let playerRadius = 20;
-        let playerSpeedX = 0;
-        let playerSpeedY = 0;
-        let gravity = 0.5;
-        let friction = 0.98;
-        let isJumping = false;
-        let gameOver = false;
+            // Set canvas background to dark blue
+            ctx.fillStyle = "#1E3A8A";  // Dark blue background
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Game loop
-        function gameLoop() {
-            if (gameOver) {
-                alert("Game Over!");
-                return;
+            function drawBall() {
+                ctx.beginPath();
+                ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+                ctx.fillStyle = "#0000FF";  // Blue color for the ball
+                ctx.fill();
+                ctx.closePath();
             }
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            function draw() {
+                // Clear canvas and fill with the dark blue background
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "#1E3A8A";  // Dark blue background
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // Player Movement
-            playerSpeedY += gravity; // Apply gravity
-            playerX += playerSpeedX;
-            playerY += playerSpeedY;
+                drawBall();
 
-            // Collision with the ground (canvas bottom)
-            if (playerY + playerRadius > canvas.height) {
-                playerY = canvas.height - playerRadius;
-                playerSpeedY = -playerSpeedY * friction;
-                isJumping = false;
+                if (ballX + dx > canvas.width - ballRadius || ballX + dx < ballRadius) {
+                    dx = -dx;
+                }
+                if (ballY + dy < ballRadius) {
+                    dy = -dy;
+                } else if (ballY + dy > canvas.height - ballRadius) {
+                    if (ballX > canvas.width - ballRadius || ballX < ballRadius) {
+                        dy = -dy;
+                    }
+                }
+
+                ballX += dx;
+                ballY += dy;
             }
 
-            // Prevent player from going out of bounds on the left and right
-            if (playerX - playerRadius < 0) {
-                playerX = playerRadius;
-            } else if (playerX + playerRadius > canvas.width) {
-                playerX = canvas.width - playerRadius;
-            }
-
-            // Draw the player (a simple circle)
-            ctx.beginPath();
-            ctx.arc(playerX, playerY, playerRadius, 0, Math.PI * 2);
-            ctx.fillStyle = "#ff5733"; // Red color for player
-            ctx.fill();
-            ctx.closePath();
-
-            // Request the next frame
-            requestAnimationFrame(gameLoop);
-        }
-
-        // Handle user input for player movement
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'ArrowRight') {
-                playerSpeedX = 5; // Move right
-            } else if (event.key === 'ArrowLeft') {
-                playerSpeedX = -5; // Move left
-            } else if (event.key === 'ArrowUp' && !isJumping) {
-                playerSpeedY = -15; // Jump up
-                isJumping = true;
-            }
-        });
-
-        // Stop player movement when the arrow key is released
-        document.addEventListener('keyup', (event) => {
-            if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
-                playerSpeedX = 0; // Stop horizontal movement
-            }
-        });
-
-        // Start the game loop when the page loads
-        window.onload = function() {
-            gameLoop();
-        };
-    </script>
+            setInterval(draw, 10);
+        </script>
+    </div>
 </body>
 </html>
